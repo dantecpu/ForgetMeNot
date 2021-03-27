@@ -2,7 +2,6 @@ package com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.quiz
 
 import android.animation.AnimatorInflater
 import android.content.Context
-import android.graphics.Color
 import android.util.Size
 import android.util.TypedValue
 import android.view.View
@@ -15,8 +14,6 @@ import android.widget.LinearLayout.VERTICAL
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
@@ -25,6 +22,7 @@ import com.odnovolov.forgetmenot.domain.interactor.exercise.QuizTestExerciseCard
 import com.odnovolov.forgetmenot.presentation.common.*
 import com.odnovolov.forgetmenot.presentation.common.base.BaseController
 import com.odnovolov.forgetmenot.presentation.common.customview.TextViewWithObservableSelection
+import com.odnovolov.forgetmenot.presentation.screen.cardappearance.CardAppearance
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.AsyncCardFrame
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.CardLabel
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.CardSpaceAllocator
@@ -38,7 +36,8 @@ import kotlinx.coroutines.CoroutineScope
 class QuizTestExerciseCardViewHolder(
     private val asyncItemView: AsyncCardFrame,
     private val coroutineScope: CoroutineScope,
-    private val controller: BaseController<QuizTestExerciseCardEvent, Nothing>
+    private val controller: BaseController<QuizTestExerciseCardEvent, Nothing>,
+    private val cardAppearance: CardAppearance
 ) : ExerciseCardViewHolder<QuizTestExerciseCard>(
     asyncItemView
 ) {
@@ -68,7 +67,7 @@ class QuizTestExerciseCardViewHolder(
         TextView(itemView.context).apply {
             layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             setPadding(16.dp)
-            setTextSizeFromRes(R.dimen.text_size_question)
+            textSize = cardAppearance.questionTextSize.toFloat()
         }
     }
 
@@ -80,7 +79,7 @@ class QuizTestExerciseCardViewHolder(
                     minHeight = 56.dp // if text is smaller than compound drawable
                 }
                 setPadding(56.dp, 16.dp, 16.dp, 16.dp)
-                setTextSizeFromRes(R.dimen.text_size_answer)
+                textSize = cardAppearance.answerTextSize.toFloat()
             }
         }
     }
@@ -124,12 +123,13 @@ class QuizTestExerciseCardViewHolder(
     private fun setupView() {
         with(asyncItemView) {
             showQuestionButton.setOnClickListener { controller.dispatch(ShowQuestionButtonClicked) }
-            questionTextView.setTextSizeFromRes(R.dimen.text_size_question)
+            questionTextView.gravity = cardAppearance.questionTextAlignment.gravity
+            questionTextView.textSize = cardAppearance.questionTextSize.toFloat()
             questionTextView.observeSelectedText { selection: String ->
                 controller.dispatch(QuestionTextSelectionChanged(selection))
             }
             forEachVariantButton { variant: Int ->
-                setTextSizeFromRes(R.dimen.text_size_answer)
+                textSize = cardAppearance.answerTextSize.toFloat()
                 setOnClickListener { controller.dispatch(VariantSelected(variant)) }
                 observeSelectedText { selection: String ->
                     controller.dispatch(AnswerTextSelectionChanged(selection))
@@ -202,12 +202,12 @@ class QuizTestExerciseCardViewHolder(
                     }
                 }
                 isExpired.observe(coroutineScope) { isExpired: Boolean ->
+                    val cardBackgroundColorRes: Int =
+                        if (isExpired)
+                            R.color.card_expired else
+                            R.color.card
                     val cardBackgroundColor: Int =
-                        if (isExpired) {
-                            ContextCompat.getColor(context, R.color.background_expired_card)
-                        } else {
-                            Color.WHITE
-                        }
+                        ContextCompat.getColor(context, cardBackgroundColorRes)
                     cardView.setCardBackgroundColor(cardBackgroundColor)
                 }
                 isLearned.observe(coroutineScope) { isLearned: Boolean ->
@@ -220,11 +220,8 @@ class QuizTestExerciseCardViewHolder(
                     when (cardLabel) {
                         CardLabel.Learned -> {
                             cardLabelTextView.setText(R.string.card_label_learned)
-                            cardLabelTextView.background.colorFilter =
-                                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                                    ContextCompat.getColor(context, R.color.card_label_learned),
-                                    BlendModeCompat.SRC_ATOP
-                                )
+                            cardLabelTextView.backgroundTintList =
+                                ContextCompat.getColorStateList(context, R.color.card_label_learned)
                             cardLabelTextView.setOnClickListener {
                                 showCardLabelTipPopup(cardLabel)
                             }
@@ -232,11 +229,8 @@ class QuizTestExerciseCardViewHolder(
                         }
                         CardLabel.Expired -> {
                             cardLabelTextView.setText(R.string.card_label_expired)
-                            cardLabelTextView.background.colorFilter =
-                                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                                    ContextCompat.getColor(context, R.color.issue),
-                                    BlendModeCompat.SRC_ATOP
-                                )
+                            cardLabelTextView.backgroundTintList =
+                                ContextCompat.getColorStateList(context, R.color.card_label_expired)
                             cardLabelTextView.setOnClickListener {
                                 showCardLabelTipPopup(cardLabel)
                             }
@@ -341,7 +335,7 @@ class QuizTestExerciseCardViewHolder(
         val colorResId: Int = when (variantStatus) {
             Correct -> R.color.text_variant_status_correct
             Wrong -> R.color.text_variant_status_wrong
-            else -> R.color.text_secondary_selector
+            else -> R.color.text_on_card_selector
         }
         val colorStateList = ContextCompat.getColorStateList(variantButton.context, colorResId)
         variantButton.setTextColor(colorStateList)

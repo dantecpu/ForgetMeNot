@@ -12,8 +12,8 @@
     <string name="no">Нет</string>
     <string name="disabled">Выключено</string>
     <string name="label_name">Название</string>
-    <string name="quit_editor_message">Ваши несохраненные изменения будут потеряны. Сохранить
-        изменения перед выходом?</string>
+    <string name="quit_without_saving_message">Ваши несохраненные изменения будут потеряны.
+        Сохранить изменения перед выходом?</string>
     <string name="button_save">Сохранить</string>
     <string name="button_quit_without_saving">Выйти без сохранения</string>
     <string name="no_cards">Нет карточек</string>
@@ -65,12 +65,14 @@
     <string name="sort_by_time_created">По времени создания</string>
     <string name="sort_by_time_last_tested">По времени посл. тест.</string>
     <string name="sort_by_frequency_of_use">По частоте использ.</string>
+    <string name="sort_by_task">По заданию</string>
     <string name="title_deck_sorting_popup">Сортировать по</string>
     <string name="description_change_sorting_direction">Изменить направление сортировки</string>
     <string name="deck_sorting_name">Названию</string>
     <string name="deck_sorting_time_created">Времени создания</string>
     <string name="deck_sorting_by_time_last_tested">Времени посл. тест.</string>
     <string name="deck_sorting_by_frequency_of_use">Частоте использ.</string>
+    <string name="deck_sorting_by_task">Заданию</string>
     <string name="description_pin_icon">иконка \"Шпилька\"</string>
     <string name="deck_summary_table_average_laps">Кругов</string>
     <string name="deck_summary_table_learned">Изучено</string>
@@ -87,18 +89,31 @@
     <string name="deck_option_add_to_deck_list">Добавить в список колод</string>
     <string name="deck_option_remove_from_deck_list">Удалить из списка колод</string>
     <string name="deck_option_remove_from_deck_list_with_arg">Удалить из списка колод \'%1$s\'</string>
+    <string name="deck_option_set_preset">Установить предустановку</string>
     <string name="deck_option_export">Экспортировать</string>
     <string name="deck_option_merge_into">Объединить</string>
     <string name="deck_option_remove">Удалить</string>
-    <plurals name="toast_decks_removing">
+    <plurals name="snackbar_decks_removing">
         <item quantity="one">%d колода удалена(ы)</item>
         <item quantity="few">Удалено %d колоды</item>
         <item quantity="many">Удалено %d колод</item>
     </plurals>
-    <plurals name="toast_decks_merging">
+    <plurals name="snackbar_decks_merging">
         <item quantity="one">%1$d колода была объединена в \'%2$s\'</item>
         <item quantity="few">%1$d колоды было объединено в \'%2$s\'</item>
         <item quantity="many">%1$d колод было объединено в \'%2$s\'</item>
+    </plurals>
+    <string name="dialog_title_choose_deck_list">Выберите список колод</string>
+    <string name="dialog_title_choose_preset">Выберите предустановку</string>
+    <plurals name="snackbar_default_preset_has_been_applied">
+        <item quantity="one">Стандартная предустановка применена к %d колоде</item>
+        <item quantity="few">Стандартная предустановка применена к %d колодам</item>
+        <item quantity="many">Стандартная предустановка применена к %d колодам</item>
+    </plurals>
+    <plurals name="snackbar_preset_has_been_applied">
+        <item quantity="one">Предустановка \'%1$s\' применена к %2$d колоде</item>
+        <item quantity="few">Предустановка \'%1$s\' применена к %2$d колодам</item>
+        <item quantity="many">Предустановка \'%1$s\' применена к %2$d колодам</item>
     </plurals>
     <string name="text_autoplay_button">Автопроигрывание</string>
     <string name="text_exercise_button">Упражнение</string>
@@ -107,15 +122,14 @@
     <string name="progress_bar_reading_files">Чтение файлов ..</string>
 
 
-    <!-- Choose deck list dialog -->
-
-    <string name="dialog_title_choose_deck_list">Выберите список колод</string>
-
-
     <!-- Deck lists editor -->
 
     <string name="screen_title_deck_lists">Списки колод</string>
     <string name="hint_deck_list_edittext">Название списка</string>
+    <string name="description_deck_list_icon">иконка списка колод</string>
+    <string name="title_select_deck_list_color_popup">Цвет списка колод</string>
+    <string name="custom_color">Свой цвет</string>
+    <string name="toast_deck_list_is_removed">Список колод удален</string>
 
 
     <!-- Export dialog -->
@@ -144,7 +158,6 @@
     <string name="popup_change_deck_for_import_new_button">Новой колоде</string>
     <string name="popup_change_deck_for_import_existing_button">Существующей колоде</string>
     <string name="tab_name_source_text">Исходный текст</string>
-    <string name="tab_name_cards">Карточки</string>
     <plurals name="source_text_error_button">
         <item quantity="one">%d ошибка</item>
         <item quantity="few">%d ошибки</item>
@@ -338,11 +351,13 @@
 
     <!-- Deck editor screen -->
 
+    <string name="screen_title_deck_editor">Редактор колоды</string>
+    <string name="screen_title_deck_settings">Настройки колоды</string>
     <string name="title_rename_deck_dialog">Название колоды</string>
     <string name="error_message_empty_name">Название не может быть пустым</string>
     <string name="error_message_occupied_name">Это название - занятое</string>
     <string name="tab_name_settings">Настройки</string>
-    <string name="tab_name_content">Содержание</string>
+    <string name="tab_name_cards">Карточки</string>
     <string name="description_add_card_button">Добавить карточку</string>
 
 
@@ -646,6 +661,18 @@
     <string name="item_text_fullscreen_in_exercise">В упражнение</string>
     <string name="item_text_fullscreen_in_card_player">В проигрывателе карточек</string>
     <string name="item_text_fullscreen_in_other_places">В других местах</string>
+    <string name="text_card_appearance_settings_title">Внешний вид карточки</string>
+    <string name="text_card_appearance_settings_description">Как карточка выглядит в упражнении</string>
+
+
+    <!-- Card appearance -->
+
+    <string name="screen_title_card_appearance">Внешний вид карточки</string>
+    <string name="title_question_field">Поле вопроса</string>
+    <string name="title_answer_field">Поле ответа</string>
+    <string name="text_alignment">Выравнивание текста</string>
+    <string name="text_size">Размер текста</string>
+    <string name="error_message_indicate_text_size">Укажите размер текста</string>
 
 
     <!-- Walking mode settings screen -->
@@ -919,7 +946,7 @@
         чувствуете, что вам не хватает времени, нажмите \"Остановить\" в всплывающем окне таймера.
     </string>
     <string name="question_in_motivational_timer_article">Сколько 0,0193 км в дециметрах?</string>
-    <string name="answer_in_motivational_timer_article">193</string>
+    <string name="answer_in_motivational_timer_article" translatable="false">193</string>
     <string name="article_pronunciation">Эта программа поддерживает произношение текста с помощью
         TTS API, предоставляемого ОС Android. Для каждой колоды можно выбрать язык, на котором нужно
         озвучивать вопрос, и один язык для ответа. Поэтому при создании колоды важно использовать

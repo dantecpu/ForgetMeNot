@@ -76,7 +76,8 @@ class PlayerFragment : BaseFragment() {
             viewModel = diScope.viewModel
             playerViewPager.adapter = PlayingCardAdapter(
                 viewCoroutineScope!!,
-                diScope.playingCardController
+                diScope.playingCardController,
+                diScope.cardAppearance
             )
             progressBarForViewPager2.attach(playerViewPager)
             observeViewModel()
@@ -173,11 +174,17 @@ class PlayerFragment : BaseFragment() {
                 with(speakButton) {
                     setImageResource(
                         when (speakingStatus) {
-                            Speaking -> R.drawable.ic_volume_off_white_24dp
-                            NotSpeaking -> R.drawable.ic_volume_up_white_24dp
+                            Speaking -> R.drawable.ic_round_volume_off_24
+                            NotSpeaking -> R.drawable.ic_round_volume_up_24
                             CannotSpeak -> R.drawable.ic_volume_error_24
                         }
                     )
+                    val iconTintRes: Int =
+                        when (speakingStatus) {
+                            CannotSpeak -> R.color.issue
+                            else -> R.color.icon_on_control_panel
+                        }
+                    imageTintList = ContextCompat.getColorStateList(context, iconTintRes)
                     setOnClickListener {
                         when (speakingStatus) {
                             Speaking -> controller?.dispatch(StopSpeakButtonClicked)

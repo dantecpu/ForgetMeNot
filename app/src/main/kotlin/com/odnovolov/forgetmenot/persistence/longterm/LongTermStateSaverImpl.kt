@@ -7,18 +7,22 @@ import com.odnovolov.forgetmenot.domain.architecturecomponents.PropertyChangeReg
 import com.odnovolov.forgetmenot.domain.entity.*
 import com.odnovolov.forgetmenot.domain.interactor.fileimport.FileFormat
 import com.odnovolov.forgetmenot.domain.interactor.fileimport.FileImportStorage
+import com.odnovolov.forgetmenot.persistence.longterm.cardappearance.CardAppearancePropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.deckreviewpreference.DeckReviewPreferencePropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.fileimportstorage.FileFormatPropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.fileimportstorage.FileImportStoragePropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.fullscreenpreference.FullscreenPreferencePropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.globalstate.writingchanges.*
 import com.odnovolov.forgetmenot.persistence.longterm.initialdecksadderstate.InitialDecksAdderStatePropertyChangeHandler
+import com.odnovolov.forgetmenot.persistence.longterm.lastusedlanguages.LastUsedLanguagesPropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.pronunciationpreference.PronunciationPreferencePropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.tipstate.TipStatePropertyChangeHandler
 import com.odnovolov.forgetmenot.persistence.longterm.walkingmodepreference.WalkingModePreferencePropertyChangeHandler
 import com.odnovolov.forgetmenot.presentation.common.LongTermStateSaver
+import com.odnovolov.forgetmenot.presentation.common.SpeakerImpl.LastUsedLanguages
 import com.odnovolov.forgetmenot.presentation.common.entity.FullscreenPreference
 import com.odnovolov.forgetmenot.presentation.common.mainactivity.InitialDecksAdder
+import com.odnovolov.forgetmenot.presentation.screen.cardappearance.CardAppearance
 import com.odnovolov.forgetmenot.presentation.screen.deckeditor.decksettings.TipState
 import com.odnovolov.forgetmenot.presentation.screen.home.DeckReviewPreference
 import com.odnovolov.forgetmenot.presentation.screen.pronunciation.PronunciationPreference
@@ -64,6 +68,9 @@ class LongTermStateSaverImpl(
             put(FileImportStorage::class, FileImportStoragePropertyChangeHandler(database))
             put(FileFormat::class, FileFormatPropertyChangeHandler(database))
             put(PronunciationPreference::class, PronunciationPreferencePropertyChangeHandler(database))
+            put(LastUsedLanguages::class, LastUsedLanguagesPropertyChangeHandler(database))
+            put(CardAppearance::class, CardAppearancePropertyChangeHandler(database))
+            put(DeckList::class, DeckListPropertyChangeHandler(database))
         }
 
     override fun saveStateByRegistry() {

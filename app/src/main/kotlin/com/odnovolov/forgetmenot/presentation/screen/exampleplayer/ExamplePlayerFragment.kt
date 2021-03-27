@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -60,7 +61,8 @@ class ExamplePlayerFragment : BaseFragment() {
             viewModel = diScope.viewModel
             playerViewPager.adapter = PlayingCardAdapter(
                 viewCoroutineScope!!,
-                diScope.playingCardController
+                diScope.playingCardController,
+                diScope.cardAppearance
             )
             observeViewModel()
             controller!!.commands.observe(::executeCommand)
@@ -80,10 +82,10 @@ class ExamplePlayerFragment : BaseFragment() {
             playingCards.observe { playingCards: List<PlayingCard> ->
                 val adapter = playerViewPager.adapter as PlayingCardAdapter
                 adapter.items = playingCards
+                if (playerViewPager.currentItem != currentPosition) {
+                    playerViewPager.setCurrentItem(currentPosition, false)
+                }
                 progressBar.visibility = View.GONE
-            }
-            if (playerViewPager.currentItem != currentPosition) {
-                playerViewPager.setCurrentItem(currentPosition, false)
             }
             hasPlayingCards.observe { hasPlayingCards: Boolean ->
                 if (!hasPlayingCards) {
@@ -95,11 +97,17 @@ class ExamplePlayerFragment : BaseFragment() {
                 with(speakButton) {
                     setImageResource(
                         when (speakingStatus) {
-                            Speaking -> R.drawable.ic_volume_off_white_24dp
-                            NotSpeaking -> R.drawable.ic_volume_up_white_24dp
+                            Speaking -> R.drawable.ic_round_volume_off_24
+                            NotSpeaking -> R.drawable.ic_round_volume_up_24
                             CannotSpeak -> R.drawable.ic_volume_error_24
                         }
                     )
+                    val iconTintRes: Int =
+                        when (speakingStatus) {
+                            CannotSpeak -> R.color.issue
+                            else -> R.color.icon_on_control_panel
+                        }
+                    imageTintList = ContextCompat.getColorStateList(context, iconTintRes)
                     setOnClickListener {
                         when (speakingStatus) {
                             Speaking -> controller?.dispatch(StopSpeakButtonClicked)
@@ -177,24 +185,17 @@ class ExamplePlayerFragment : BaseFragment() {
         when (newState) {
             BottomSheetBehavior.STATE_EXPANDED -> {
                 blocker.setOnTouchListener(null)
-                exampleTextView.isVisible = false
                 controller?.dispatch(BottomSheetExpanded)
-                backgroundView.isActivated = true
             }
             BottomSheetBehavior.STATE_COLLAPSED -> {
                 blocker.setOnTouchListener { _, _ -> true }
-                exampleTextView.isVisible = true
                 controller?.dispatch(BottomSheetCollapsed)
-                if (backgroundView.isActivated) {
-                    backgroundView.isActivated = false
-                }
-            }
-            else -> {
-                if (backgroundView.isActivated) {
-                    backgroundView.isActivated = false
-                }
             }
         }
+    }
+
+    fun notifyBottomSheetSlideOffsetChanged(slideOffset: Float) {
+        exampleTextView.alpha = 1f - slideOffset
     }
 
     private fun requireSpeakErrorPopup(): PopupWindow {

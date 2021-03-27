@@ -8,7 +8,7 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background_window"
+            android:background="@color/window"
             android:orientation="horizontal"
             android:stateListAnimator="@animator/app_bar">
 
@@ -31,7 +31,7 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="@string/screen_title_support_app"
-                android:textColor="@color/text_title"
+                android:textColor="@color/text_high_emphasis"
                 android:textSize="@dimen/text_size_screen_title"
                 android:textStyle="bold" />
 

@@ -55,6 +55,9 @@ sealed class HomeEvent {
     object UnpinDeckSelectionOptionSelected : HomeEvent()
     object AddToDeckListDeckSelectionOptionSelected : HomeEvent()
     object RemoveFromDeckListDeckSelectionOptionSelected : HomeEvent()
+    object SetPresetDeckSelectionOptionSelected : HomeEvent()
+    class PresetButtonClicked(val exercisePreferenceId: Long) : HomeEvent()
+    object PresetHasBeenAppliedSnackbarCancelButtonClicked : HomeEvent()
     object ExportDeckSelectionOptionSelected : HomeEvent()
     object MergeIntoDeckSelectionOptionSelected : HomeEvent()
     class DeckToMergeIntoIsSelected(val abstractDeck: AbstractDeck) : HomeEvent()
@@ -79,4 +82,6 @@ sealed class HomeEvent {
     class DeckListForAddingDecksSelected(val deckListId: Long) : HomeEvent()
     object CreateDeckListForAddingDecksButtonClicked : HomeEvent()
     class DeckListForRemovingDecksSelected(val deckListId: Long) : HomeEvent()
+
+    object FragmentResumed : HomeEvent()
 }

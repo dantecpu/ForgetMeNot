@@ -3,9 +3,9 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorControlHighlight</item>
-        <item name="android:windowBackground">@color/background_window</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlHighlight">@color/ripple</item>
+        <item name="android:windowBackground">@color/window</item>
         <item name="shapeAppearanceLargeComponent">@style/RoundCornerBottomSheet</item>
     </style>
 
@@ -33,7 +33,7 @@
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingBottom">8dp</item>
-        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textColor">@color/text_medium_emphasis</item>
         <item name="android:textIsSelectable">true</item>
         <item name="android:textSize">@dimen/text_size_description</item>
         <item name="android:fontFamily">@font/nunito_bold</item>
@@ -60,7 +60,7 @@
         <item name="android:layout_height">40dp</item>
         <item name="android:padding">8dp</item>
         <item name="android:layout_marginStart">24dp</item>
-        <item name="tint">@color/text_primary_blue_selector</item>
+        <item name="tint">@color/item_drawer</item>
     </style>
 
     <style name="DrawerItemText">
@@ -68,7 +68,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">32dp</item>
         <item name="android:layout_marginEnd">32dp</item>
-        <item name="android:textColor">@color/text_primary_blue_selector</item>
+        <item name="android:textColor">@color/item_drawer</item>
         <item name="android:textSize">@dimen/text_size_main_drawer_item</item>
         <item name="android:fontFamily">@font/nunito_bold</item>
     </style>
@@ -80,7 +80,7 @@
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:paddingEnd">20dp</item>
-        <item name="android:textColor">@color/text_primary_blue_selector</item>
+        <item name="android:textColor">@color/item_blue_selector</item>
         <item name="android:textSize">@dimen/text_size_deck_sorting_popup_item</item>
     </style>
 
@@ -103,10 +103,10 @@
         <item name="android:paddingBottom">16dp</item>
         <item name="android:paddingStart">32dp</item>
         <item name="android:paddingEnd">32dp</item>
-        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textColor">@color/text_medium_emphasis</item>
         <item name="android:textSize">@dimen/text_size_deck_option_bottom_sheet_item</item>
         <item name="android:background">@drawable/ripple_rectangular_colored</item>
-        <item name="drawableTint">@color/textSecondary</item>
+        <item name="drawableTint">@color/text_medium_emphasis</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
@@ -133,10 +133,10 @@
         <item name="android:paddingBottom">16dp</item>
         <item name="android:paddingStart">32dp</item>
         <item name="android:paddingEnd">32dp</item>
-        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textColor">@color/text_medium_emphasis</item>
         <item name="android:textSize">@dimen/text_size_about_screen_item</item>
         <item name="android:background">@drawable/ripple_rectangular_colored</item>
-        <item name="drawableTint">@color/textSecondary</item>
+        <item name="drawableTint">@color/text_medium_emphasis</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
@@ -154,7 +154,7 @@
         <item name="android:paddingEnd">12dp</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingBottom">16dp</item>
-        <item name="android:background">@drawable/white_rectangle_4dp_corner_radius</item>
+        <item name="android:background">@drawable/surface_4dp_corner_radius</item>
         <item name="android:orientation">vertical</item>
     </style>
 
@@ -162,7 +162,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/nunito_extrabold</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/accent</item>
         <item name="android:textSize">@dimen/text_size_section_title</item>
     </style>
 
@@ -171,7 +171,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:fontFamily">@font/nunito_bold</item>
-        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textColor">@color/text_medium_emphasis</item>
         <item name="android:textSize">@dimen/text_size_description</item>
     </style>
 
@@ -186,7 +186,7 @@
         <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/text_primary_blue</item>
+        <item name="android:textColor">@color/item_blue_selected</item>
         <item name="android:textSize">@dimen/text_size_support_app_screen_button</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -199,6 +199,7 @@
         <item name="android:layout_margin">16dp</item>
         <item name="cardCornerRadius">16dp</item>
         <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/card</item>
     </style>
 
     <style name="WalkingModeSwitchStyle">
@@ -216,7 +217,7 @@
     <style name="IntervalsPickerTheme" parent="AppTheme">
         <item name="colorControlNormal">@color/floating_button_in_exercise</item>
         <item name="android:textSize">@dimen/text_size_intervals_number_picker</item>
-        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textColor">@color/text_medium_emphasis</item>
         <item name="android:fontFamily">@font/nunito_bold</item>
     </style>
 
@@ -236,7 +237,8 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
         <item name="android:drawablePadding">16dp</item>
         <item name="android:padding">16dp</item>
-        <item name="android:textColor">@color/text_secondary_selector</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textColor">@color/text_on_card_selector</item>
         <item name="android:textSize">@dimen/text_size_exercise_screen_variant_button</item>
         <item name="drawableStartCompat">@drawable/ic_radiobutton_unchecked_24</item>
     </style>
@@ -247,7 +249,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
-        <item name="android:textColor">@color/text_primary_blue</item>
+        <item name="android:textColor">@color/item_blue_selected</item>
         <item name="android:textSize">@dimen/text_size_section_title</item>
         <item name="android:fontFamily">@font/nunito_extrabold</item>
     </style>
@@ -281,7 +283,7 @@
     <style name="SettingsItemTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_high_emphasis</item>
         <item name="android:textSize">@dimen/text_size_settings_item_title</item>
         <item name="android:fontFamily">@font/nunito_bold</item>
     </style>
@@ -289,7 +291,7 @@
     <style name="SettingsItemDescription">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/text_description</item>
+        <item name="android:textColor">@color/text_helper</item>
         <item name="android:textSize">@dimen/text_size_settings_item_description</item>
         <item name="android:fontFamily">@font/nunito_bold</item>
     </style>
@@ -328,7 +330,7 @@
         <item name="android:fontFamily">@font/nunito_bold</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textColor">@color/text_medium_emphasis</item>
         <item name="android:textSize">@dimen/text_size_dsv_format_screen_item_title</item>
     </style>
 
@@ -356,5 +358,39 @@
     </style>
 
     <!-- end DSV format -->
+
+    <style name="SettingsSurface">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@drawable/surface_4dp_corner_radius</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="SettingsTitleOnSettingsSurface">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textColor">@color/text_high_emphasis</item>
+        <item name="android:textSize">@dimen/text_size_section_title</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="drawableTint">@color/icon_gray</item>
+    </style>
+
+    <style name="DividerOnSettingsSurface">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:background">@color/divider</item>
+    </style>
 
 </resources>

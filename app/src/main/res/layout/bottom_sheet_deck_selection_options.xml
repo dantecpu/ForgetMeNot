@@ -23,7 +23,7 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/nunito_bold"
-            android:textColor="@color/textPrimary"
+            android:textColor="@color/text_high_emphasis"
             android:textSize="@dimen/text_size_option_bottom_sheet_title"
             android:textStyle="bold"
             tools:text="3 decks" />
@@ -69,6 +69,12 @@
                     style="@style/DeckOptionItem"
                     android:text="@string/deck_option_remove_from_deck_list"
                     app:drawableStartCompat="@drawable/ic_remove_from_list_20" />
+
+            <TextView
+                    android:id="@+id/setPresetDeckSelectionOptionItem"
+                    style="@style/DeckOptionItem"
+                    android:text="@string/deck_option_set_preset"
+                    app:drawableStartCompat="@drawable/ic_round_tune_20" />
 
             <TextView
                     android:id="@+id/exportDeckSelectionOptionItem"

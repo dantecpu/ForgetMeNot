@@ -9,10 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.GravityCompat
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
+import androidx.core.view.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -32,6 +29,7 @@ import com.odnovolov.forgetmenot.presentation.screen.cardseditor.qaeditor.paste
 import com.odnovolov.forgetmenot.presentation.screen.home.HomeController.Command.*
 import com.odnovolov.forgetmenot.presentation.screen.home.HomeEvent.*
 import com.odnovolov.forgetmenot.presentation.screen.home.choosedecklist.ChooseDeckListDialog
+import com.odnovolov.forgetmenot.presentation.screen.home.choosepreset.ChoosePresetDialog
 import com.odnovolov.forgetmenot.presentation.screen.home.deckoptions.DeckOptionsBottomSheet
 import com.odnovolov.forgetmenot.presentation.screen.home.deckselectionoptions.DeckSelectionOptionsBottomSheet
 import com.odnovolov.forgetmenot.presentation.screen.navhost.NavHostFragment
@@ -289,7 +287,7 @@ class HomeFragment : BaseFragment() {
     private fun updateStatusBarColor(isColorful: Boolean = isSelectionMode) {
         if (findNavController().currentDestination?.id == R.id.deck_chooser) return
         if (isColorful) {
-            setStatusBarColor(requireActivity(), R.color.colorAccent)
+            setStatusBarColor(requireActivity(), R.color.selection_toolbar)
         } else {
             setTransparentStatusBar(requireActivity())
         }
@@ -387,8 +385,8 @@ class HomeFragment : BaseFragment() {
         with(drawerButton) {
             setImageResource(
                 if (isSearchMode)
-                    R.drawable.ic_round_keyboard_backspace_24_colored else
-                    R.drawable.ic_drawer_colored
+                    R.drawable.ic_round_keyboard_backspace_24 else
+                    R.drawable.ic_round_drawer_24
             )
             setOnClickListener {
                 if (isSearchMode) {
@@ -437,7 +435,7 @@ class HomeFragment : BaseFragment() {
                     .make(
                         homeRootView,
                         resources.getQuantityString(
-                            R.plurals.toast_decks_removing,
+                            R.plurals.snackbar_decks_removing,
                             command.numberOfRemovedDecks,
                             command.numberOfRemovedDecks
                         ),
@@ -455,7 +453,7 @@ class HomeFragment : BaseFragment() {
                     .make(
                         homeRootView,
                         resources.getQuantityString(
-                            R.plurals.toast_decks_merging,
+                            R.plurals.snackbar_decks_merging,
                             command.numberOfMergedDecks,
                             command.numberOfMergedDecks,
                             command.deckNameMergedInto
@@ -530,6 +528,38 @@ class HomeFragment : BaseFragment() {
             }
             ShowDeckListsChooser -> {
                 ChooseDeckListDialog().show(childFragmentManager, "ChooseDeckListDialog")
+            }
+            ShowPresetChooser -> {
+                ChoosePresetDialog().show(childFragmentManager, "ChoosePresetDialog")
+            }
+            is ShowPresetHasBeenAppliedMessage -> {
+                val message: String =
+                    if (command.presetName.isEmpty()) {
+                        resources.getQuantityString(
+                            R.plurals.snackbar_default_preset_has_been_applied,
+                            command.numberOfAffectedDecks,
+                            command.numberOfAffectedDecks
+                        )
+                    } else {
+                        resources.getQuantityString(
+                            R.plurals.snackbar_preset_has_been_applied,
+                            command.numberOfAffectedDecks,
+                            command.presetName,
+                            command.numberOfAffectedDecks
+                        )
+                    }
+                lastShownSnackbar = Snackbar
+                    .make(
+                        homeRootView,
+                        message,
+                        resources.getInteger(R.integer.duration_deck_is_deleted_snackbar)
+                    )
+                    .setAction(
+                        R.string.snackbar_action_cancel,
+                        { controller?.dispatch(PresetHasBeenAppliedSnackbarCancelButtonClicked) }
+                    ).apply {
+                        show()
+                    }
             }
         }
     }

@@ -9,6 +9,7 @@ import com.odnovolov.forgetmenot.domain.interactor.cardeditor.EditableCard
 import com.odnovolov.forgetmenot.domain.interactor.decklistseditor.DeckListsEditor
 import com.odnovolov.forgetmenot.domain.interactor.decklistseditor.addDeckIds
 import com.odnovolov.forgetmenot.domain.interactor.decklistseditor.removeDeckIds
+import com.odnovolov.forgetmenot.domain.interactor.decksettings.DeckPresetSetter
 import com.odnovolov.forgetmenot.domain.interactor.exercise.Exercise
 import com.odnovolov.forgetmenot.domain.interactor.exercise.ExerciseStateCreator
 import com.odnovolov.forgetmenot.domain.interactor.operationsondecks.DeckMerger
@@ -59,6 +60,7 @@ class HomeController(
     private val exerciseStateCreator: ExerciseStateCreator,
     private val cardsSearcher: CardsSearcher,
     private val batchCardEditor: BatchCardEditor,
+    private val deckPresetSetter: DeckPresetSetter,
     private val globalState: GlobalState,
     private val navigator: Navigator,
     private val longTermStateSaver: LongTermStateSaver,
@@ -92,6 +94,12 @@ class HomeController(
         ) : Command()
 
         object ShowDeckListsChooser : Command()
+        object ShowPresetChooser : Command()
+
+        class ShowPresetHasBeenAppliedMessage(
+            val numberOfAffectedDecks: Int,
+            val presetName: String
+        ) : Command()
     }
 
     init {
@@ -132,7 +140,7 @@ class HomeController(
                 val selectedDeckList: DeckList? = event.deckListId?.let { deckListId: Long ->
                     globalState.deckLists.find { deckList: DeckList -> deckList.id == deckListId }
                 }
-                deckReviewPreference.currentDeckList = selectedDeckList
+                deckReviewPreference.deckList = selectedDeckList
             }
 
             CreateDeckListButtonClicked -> {
@@ -212,7 +220,7 @@ class HomeController(
 
             EditCardsDeckOptionSelected -> {
                 val deckId: Long = screenState.deckForDeckOptionMenu?.id ?: return
-                navigateToDeckEditor(deckId, DeckEditorScreenTab.Content)
+                navigateToDeckEditor(deckId, DeckEditorScreenTab.Cards)
             }
 
             PinDeckOptionSelected -> {
@@ -254,6 +262,38 @@ class HomeController(
                 notifyDeckListUpdated()
             }
 
+            SetPresetDeckSelectionOptionSelected -> {
+                sendCommand(ShowPresetChooser)
+            }
+
+            is PresetButtonClicked -> {
+                val selectedDeckIds = screenState.deckSelection?.selectedDeckIds ?: return
+                val decks = globalState.decks.filter { deck: Deck -> deck.id in selectedDeckIds }
+                val exercisePreference: ExercisePreference =
+                    if (event.exercisePreferenceId == ExercisePreference.Default.id) {
+                        ExercisePreference.Default
+                    } else {
+                        globalState.sharedExercisePreferences.find { sharedExercisePreference ->
+                            sharedExercisePreference.id == event.exercisePreferenceId
+                        } ?: return
+                    }
+                val numberOfAffectedDecks: Int =
+                    deckPresetSetter.setDeckPreset(decks, exercisePreference)
+                if (numberOfAffectedDecks > 0) {
+                    sendCommand(
+                        ShowPresetHasBeenAppliedMessage(
+                            numberOfAffectedDecks,
+                            exercisePreference.name
+                        )
+                    )
+                }
+                screenState.deckSelection = null
+            }
+
+            PresetHasBeenAppliedSnackbarCancelButtonClicked -> {
+                deckPresetSetter.cancel()
+            }
+
             ExportDeckOptionSelected -> {
                 val deck = screenState.deckForDeckOptionMenu ?: return
                 navigator.navigateToExportFromNavHost {
@@ -270,6 +310,7 @@ class HomeController(
                 val deckId: Long = screenState.deckForDeckOptionMenu?.id ?: return
                 val numberOfRemovedDecks = deckRemover.removeDeck(deckId)
                 sendCommand(ShowDeckRemovingMessage(numberOfRemovedDecks))
+                notifyDeckListUpdated()
             }
 
             AutoplayButtonClicked -> {
@@ -435,7 +476,8 @@ class HomeController(
             }
 
             RemovedDecksSnackbarCancelButtonClicked -> {
-                deckRemover.restoreDecks()
+                deckRemover.cancelRemoving()
+                notifyDeckListUpdated()
             }
 
             InvertCardSelectionOptionSelected -> {
@@ -558,6 +600,16 @@ class HomeController(
                 screenState.deckSelection = null
                 notifyDeckListUpdated()
             }
+
+            FragmentResumed -> {
+                val isCurrentDeckListExists = deckReviewPreference.deckList
+                    ?.let { deckList: DeckList -> deckList in globalState.deckLists}
+                    ?: true
+                if (!isCurrentDeckListExists) {
+                    deckReviewPreference.deckList = null
+                    notifyDeckListUpdated()
+                }
+            }
         }
     }
 
@@ -659,6 +711,7 @@ class HomeController(
         val numberOfRemovedDecks = deckRemover.removeDecks(deckIdsToRemove)
         sendCommand(ShowDeckRemovingMessage(numberOfRemovedDecks))
         screenState.deckSelection = null
+        notifyDeckListUpdated()
     }
 
     private fun removeSelectedCards() {

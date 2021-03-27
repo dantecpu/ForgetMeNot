@@ -1,10 +1,7 @@
 package com.odnovolov.forgetmenot.presentation.screen.home
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -67,7 +64,9 @@ class DeckListFragment : BaseFragment() {
     }
 
     private fun initDeckPreviewAdapter() {
-        val setupHeader: (View) -> Unit = { header: View ->
+        val createHeader: (ViewGroup) -> View = { parent: ViewGroup ->
+            val header: View = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_deck_preview_header, parent, false)
             filterButton = header.filterButton
             header.filterButton.setOnClickListener {
                 showFiltersPopup(anchor = header.filterButton)
@@ -86,9 +85,10 @@ class DeckListFragment : BaseFragment() {
                 needToShowSortingPopup = false
                 showSortingPopup(anchor = header.sortingButton)
             }
+            header
         }
         deckPreviewAdapter = DeckPreviewAdapter(
-            setupHeader,
+            createHeader,
             onDeckButtonClicked = { deckId -> controller?.dispatch(DeckButtonClicked(deckId)) },
             onDeckButtonLongClicked = { deckId -> controller?.dispatch(DeckButtonLongClicked(deckId)) },
             onDeckOptionButtonClicked = { deckId -> controller?.dispatch(DeckOptionButtonClicked(deckId)) },
@@ -115,6 +115,7 @@ class DeckListFragment : BaseFragment() {
                 CreatedAt -> R.string.sort_by_time_created
                 LastTestedAt -> R.string.sort_by_time_last_tested
                 FrequencyOfUse -> R.string.sort_by_frequency_of_use
+                Task -> R.string.sort_by_task
             }
         )
         val directionIconId: Int = when (deckSorting.direction) {
@@ -162,8 +163,19 @@ class DeckListFragment : BaseFragment() {
                         controller?.dispatch(CreateDeckListButtonClicked)
                     }
                 }
+            val scrollListener = ViewTreeObserver.OnScrollChangedListener {
+                val canScrollUp = content.contentScrollView.canScrollVertically(-1)
+                if (content.divider.isVisible != canScrollUp) {
+                    content.divider.isVisible = canScrollUp
+                }
+            }
+            content.contentScrollView.viewTreeObserver.addOnScrollChangedListener(scrollListener)
             filtersPopup = LightPopupWindow(content).apply {
                 width = 250.dp
+                setOnDismissListener {
+                    content.contentScrollView.viewTreeObserver
+                        .removeOnScrollChangedListener(scrollListener)
+                }
             }
             subscribeFiltersPopupToViewModel(content)
         }
@@ -175,7 +187,7 @@ class DeckListFragment : BaseFragment() {
             displayOnlyDecksAvailableForExercise
                 .observe { displayOnlyDecksAvailableForExercise: Boolean ->
                     contentView.availableForExerciseCheckBox.isChecked =
-                            displayOnlyDecksAvailableForExercise
+                        displayOnlyDecksAvailableForExercise
                 }
             selectableDeckLists.observe { deckList: List<SelectableDeckList> ->
                 selectableDeckListAdapter.items = deckList
@@ -203,6 +215,9 @@ class DeckListFragment : BaseFragment() {
                     sortByFrequencyOfUseButton.setOnClickListener {
                         controller?.dispatch(SortByButtonClicked(FrequencyOfUse))
                     }
+                    sortByTaskButton.setOnClickListener {
+                        controller?.dispatch(SortByButtonClicked(Task))
+                    }
                     sortingDirectionButton.setOnClickListener {
                         controller?.dispatch(SortingDirectionButtonClicked)
                     }
@@ -229,6 +244,7 @@ class DeckListFragment : BaseFragment() {
                 CreatedAt -> sortByTimeCreatedTextView
                 LastTestedAt -> sortByTimeLastTestedTextView
                 FrequencyOfUse -> sortByFrequencyOfUseTextView
+                Task -> sortByTaskTextView
             }
             sortingDirectionButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 topToTop = directionButtonAnchor.id
@@ -238,6 +254,7 @@ class DeckListFragment : BaseFragment() {
             sortByTimeCreatedTextView.isSelected = deckSorting.criterion == CreatedAt
             sortByTimeLastTestedTextView.isSelected = deckSorting.criterion == LastTestedAt
             sortByFrequencyOfUseTextView.isSelected = deckSorting.criterion == FrequencyOfUse
+            sortByTaskTextView.isSelected = deckSorting.criterion == Task
         }
     }
 
@@ -247,6 +264,7 @@ class DeckListFragment : BaseFragment() {
         resumePauseCoroutineScope!!.launch {
             val coroutineScope = this
             val diScope = HomeDiScope.getAsync() ?: return@launch
+            diScope.controller.dispatch(FragmentResumed)
             val viewModel = diScope.viewModel
             with(viewModel) {
                 deckListItems.observe(coroutineScope) { deckListItems: List<DeckListItem> ->

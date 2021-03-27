@@ -1,14 +1,12 @@
 package com.odnovolov.forgetmenot.presentation.screen.exercise
 
 import com.odnovolov.forgetmenot.domain.interactor.exercise.Exercise
-import com.odnovolov.forgetmenot.domain.interactor.exercise.ExerciseCard
 import com.odnovolov.forgetmenot.persistence.shortterm.ExerciseStateProvider
 import com.odnovolov.forgetmenot.persistence.shortterm.ReadyToUseSerializableStateProvider
-import com.odnovolov.forgetmenot.presentation.common.AudioFocusManager
-import com.odnovolov.forgetmenot.presentation.common.SpeakerImpl
 import com.odnovolov.forgetmenot.presentation.common.businessLogicThread
 import com.odnovolov.forgetmenot.presentation.common.di.AppDiScope
 import com.odnovolov.forgetmenot.presentation.common.di.DiScopeManager
+import com.odnovolov.forgetmenot.presentation.screen.cardappearance.CardAppearance
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.entry.EntryTestExerciseCardController
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.manual.ManualTestExerciseCardController
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.off.OffTestExerciseCardController
@@ -41,28 +39,14 @@ class ExerciseDiScope private constructor(
     private val screenState: ExerciseScreenState =
         initialExerciseScreenState ?: exerciseScreenStateProvider.load()
 
-    private val audioFocusManager = AudioFocusManager(
-        AppDiScope.get().app
-    )
-
-    private val speakerImpl = SpeakerImpl(
-        AppDiScope.get().app,
-        AppDiScope.get().activityLifecycleCallbacksInterceptor.activityLifecycleEventFlow,
-        audioFocusManager,
-        initialLanguage = exerciseState.exerciseCards.getOrNull(0)?.let { exerciseCard: ExerciseCard ->
-            val pronunciation = exerciseCard.base.deck.exercisePreference.pronunciation
-            if (exerciseCard.base.isInverted)
-                pronunciation.answerLanguage else
-                pronunciation.questionLanguage
-        }
-    )
-
     val exercise = Exercise(
         exerciseState,
         AppDiScope.get().globalState,
-        speakerImpl,
+        AppDiScope.get().speakerImpl,
         coroutineContext = Job() + businessLogicThread
     )
+
+    private val cardAppearance: CardAppearance = AppDiScope.get().cardAppearance
 
     val controller = ExerciseController(
         exercise,
@@ -77,7 +61,7 @@ class ExerciseDiScope private constructor(
 
     val viewModel = ExerciseViewModel(
         exerciseState,
-        speakerImpl,
+        AppDiScope.get().speakerImpl,
         AppDiScope.get().walkingModePreference,
         AppDiScope.get().globalState
     )
@@ -113,7 +97,8 @@ class ExerciseDiScope private constructor(
         offTestExerciseCardController,
         manualTestExerciseCardController,
         quizTestExerciseCardController,
-        entryTestExerciseCardController
+        entryTestExerciseCardController,
+        cardAppearance
     )
 
     companion object : DiScopeManager<ExerciseDiScope>() {
@@ -124,9 +109,8 @@ class ExerciseDiScope private constructor(
 
         override fun onCloseDiScope(diScope: ExerciseDiScope) {
             with(diScope) {
+                AppDiScope.get().speakerImpl.stop()
                 exercise.cancel()
-                audioFocusManager.abandonAllRequests()
-                speakerImpl.shutdown()
                 controller.dispose()
                 offTestExerciseCardController.dispose()
                 manualTestExerciseCardController.dispose()

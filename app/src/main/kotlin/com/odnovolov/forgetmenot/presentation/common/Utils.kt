@@ -3,6 +3,7 @@ package com.odnovolov.forgetmenot.presentation.common
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
 import android.graphics.Color
@@ -30,9 +31,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat.Type
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.odnovolov.forgetmenot.BuildConfig
 import com.odnovolov.forgetmenot.R
 import kotlinx.coroutines.*
@@ -192,7 +195,7 @@ fun LayoutInflater.inflateAsync(
     val frameLayout = FrameLayout(context)
     GlobalScope.launch(Dispatchers.IO) {
         val view = inflate(layoutResId, frameLayout, false)
-        withContext(Dispatchers.Main.immediate) {
+        withContext(Dispatchers.Main) {
             frameLayout.addView(view)
             onInflated()
         }
@@ -350,14 +353,26 @@ fun setTransparentStatusBar(activity: Activity) {
     activity.window.statusBarColor = Color.TRANSPARENT
     if (VERSION.SDK_INT >= VERSION_CODES.M) {
         val visibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (activity.isDarkMode != true) {
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            } else {
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            }
         activity.window.decorView.systemUiVisibility = visibility
     } else {
         activity.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
     }
 }
+
+val Context.isDarkMode: Boolean?
+    get() = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        Configuration.UI_MODE_NIGHT_YES -> true
+        Configuration.UI_MODE_NIGHT_NO -> false
+        Configuration.UI_MODE_NIGHT_UNDEFINED -> null
+        else -> null
+    }
 
 fun getStatusBarHeight(context: Context): Int {
     var result = 0
@@ -401,3 +416,26 @@ fun Fragment.createDialog(
             ContextCompat.getDrawable(context, R.drawable.background_dialog)
         )
     }
+
+fun TextView.setDrawableTint(color: Int) {
+    for (compoundDrawable in compoundDrawables) {
+        compoundDrawable ?: continue
+        val wrappedDrawable = DrawableCompat.wrap(compoundDrawable)
+        DrawableCompat.setTint(wrappedDrawable, color)
+    }
+}
+
+fun View.addBottomSheetCallbackWithInitialNotification(
+    bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback
+) {
+    val behavior = BottomSheetBehavior.from(this)
+    behavior.addBottomSheetCallback(bottomSheetCallback)
+    bottomSheetCallback.onStateChanged(this, behavior.state)
+    val slideOffset = when (behavior.state) {
+        BottomSheetBehavior.STATE_EXPANDED -> 1f
+        BottomSheetBehavior.STATE_COLLAPSED -> 0f
+        BottomSheetBehavior.STATE_HIDDEN -> -1f
+        else -> return
+    }
+    bottomSheetCallback.onSlide(this, slideOffset)
+}

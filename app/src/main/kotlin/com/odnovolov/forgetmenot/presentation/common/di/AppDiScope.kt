@@ -2,14 +2,18 @@ package com.odnovolov.forgetmenot.presentation.common.di
 
 import com.odnovolov.forgetmenot.Database
 import com.odnovolov.forgetmenot.domain.entity.GlobalState
+import com.odnovolov.forgetmenot.domain.interactor.decklistseditor.recheckDeckIdsInDeckLists
 import com.odnovolov.forgetmenot.domain.interactor.fileimport.FileImportStorage
 import com.odnovolov.forgetmenot.persistence.DatabaseInitializer
 import com.odnovolov.forgetmenot.persistence.longterm.LongTermStateSaverImpl
+import com.odnovolov.forgetmenot.persistence.longterm.cardappearance.CardAppearanceProvider
 import com.odnovolov.forgetmenot.persistence.longterm.fileimportstorage.FileImportStorageProvider
 import com.odnovolov.forgetmenot.persistence.longterm.globalstate.provision.GlobalStateProvider
+import com.odnovolov.forgetmenot.persistence.longterm.lastusedlanguages.LastUsedLanguagesProvider
 import com.odnovolov.forgetmenot.persistence.longterm.tipstate.TipStateProvider
 import com.odnovolov.forgetmenot.persistence.longterm.walkingmodepreference.WalkingModePreferenceProvider
 import com.odnovolov.forgetmenot.presentation.common.*
+import com.odnovolov.forgetmenot.presentation.screen.cardappearance.CardAppearance
 import com.odnovolov.forgetmenot.presentation.screen.walkingmodesettings.WalkingModePreference
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -39,6 +43,22 @@ class AppDiScope(
     val longTermStateSaver: LongTermStateSaver = LongTermStateSaverImpl(database)
 
     val json = Json
+
+    val audioFocusManager = AudioFocusManager(app)
+
+    val speakerImpl = SpeakerImpl(
+        app,
+        activityLifecycleCallbacksInterceptor.activityLifecycleEventFlow,
+        audioFocusManager,
+        lastUsedLanguages = LastUsedLanguagesProvider(database).load()
+    )
+
+    val cardAppearance: CardAppearance = CardAppearanceProvider(database).load()
+
+    init {
+        recheckDeckIdsInDeckLists(globalState)
+        longTermStateSaver.saveStateByRegistry()
+    }
 
     companion object {
         @Volatile

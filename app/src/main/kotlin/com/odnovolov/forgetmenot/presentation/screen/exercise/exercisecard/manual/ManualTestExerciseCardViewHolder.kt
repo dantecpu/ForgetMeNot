@@ -3,7 +3,6 @@ package com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.manu
 import android.animation.AnimatorInflater
 import android.animation.LayoutTransition
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.util.Size
 import android.view.View
 import android.view.View.MeasureSpec
@@ -21,6 +20,7 @@ import com.odnovolov.forgetmenot.R
 import com.odnovolov.forgetmenot.domain.interactor.exercise.ManualTestExerciseCard
 import com.odnovolov.forgetmenot.presentation.common.*
 import com.odnovolov.forgetmenot.presentation.common.base.BaseController
+import com.odnovolov.forgetmenot.presentation.screen.cardappearance.CardAppearance
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.AsyncCardFrame
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.CardLabel
 import com.odnovolov.forgetmenot.presentation.screen.exercise.exercisecard.CardSpaceAllocator
@@ -34,7 +34,8 @@ import kotlinx.coroutines.CoroutineScope
 class ManualTestExerciseCardViewHolder(
     private val asyncItemView: AsyncCardFrame,
     private val coroutineScope: CoroutineScope,
-    private val controller: BaseController<ManualTestExerciseCardEvent, Nothing>
+    private val controller: BaseController<ManualTestExerciseCardEvent, Nothing>,
+    private val cardAppearance: CardAppearance
 ) : ExerciseCardViewHolder<ManualTestExerciseCard>(
     asyncItemView
 ) {
@@ -52,7 +53,7 @@ class ManualTestExerciseCardViewHolder(
         TextView(itemView.context).apply {
             layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             setPadding(16.dp)
-            setTextSizeFromRes(R.dimen.text_size_question)
+            textSize = cardAppearance.questionTextSize.toFloat()
         }
     }
 
@@ -60,7 +61,7 @@ class ManualTestExerciseCardViewHolder(
         TextView(itemView.context).apply {
             layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             setPadding(16.dp, 16.dp, 16.dp, 80.dp)
-            setTextSizeFromRes(R.dimen.text_size_answer)
+            textSize = cardAppearance.answerTextSize.toFloat()
         }
     }
 
@@ -106,7 +107,8 @@ class ManualTestExerciseCardViewHolder(
             questionTextView.observeSelectedText { selection: String ->
                 controller.dispatch(QuestionTextSelectionChanged(selection))
             }
-            questionTextView.setTextSizeFromRes(R.dimen.text_size_question)
+            questionTextView.gravity = cardAppearance.questionTextAlignment.gravity
+            questionTextView.textSize = cardAppearance.questionTextSize.toFloat()
             rememberButton.setOnClickListener {
                 controller.dispatch(RememberButtonClicked)
             }
@@ -116,11 +118,13 @@ class ManualTestExerciseCardViewHolder(
             hintTextView.observeSelectedRange { startIndex: Int, endIndex: Int ->
                 controller.dispatch(HintSelectionChanged(startIndex, endIndex))
             }
-            hintTextView.setTextSizeFromRes(R.dimen.text_size_answer)
+            hintTextView.gravity = cardAppearance.answerTextAlignment.gravity
+            hintTextView.textSize = cardAppearance.answerTextSize.toFloat()
             answerTextView.observeSelectedText { selection: String ->
                 controller.dispatch(AnswerTextSelectionChanged(selection))
             }
-            answerTextView.setTextSizeFromRes(R.dimen.text_size_answer)
+            answerTextView.gravity = cardAppearance.answerTextAlignment.gravity
+            answerTextView.textSize = cardAppearance.answerTextSize.toFloat()
             cardLabelTextView.stateListAnimator =
                 AnimatorInflater.loadStateListAnimator(context, R.animator.card_label)
             addScrollListener {
@@ -177,12 +181,12 @@ class ManualTestExerciseCardViewHolder(
                     updateBottomButtonsShadowColor()
                 }
                 isExpired.observe(coroutineScope) { isExpired: Boolean ->
+                    val cardBackgroundColorRes: Int =
+                        if (isExpired)
+                            R.color.card_expired else
+                            R.color.card
                     val cardBackgroundColor: Int =
-                        if (isExpired) {
-                            ContextCompat.getColor(context, R.color.background_expired_card)
-                        } else {
-                            Color.WHITE
-                        }
+                        ContextCompat.getColor(context, cardBackgroundColorRes)
                     cardView.setCardBackgroundColor(cardBackgroundColor)
                 }
                 isLearned.observe(coroutineScope) { isLearned: Boolean ->
@@ -199,11 +203,8 @@ class ManualTestExerciseCardViewHolder(
                     when (cardLabel) {
                         CardLabel.Learned -> {
                             cardLabelTextView.setText(R.string.card_label_learned)
-                            cardLabelTextView.background.colorFilter =
-                                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                                    ContextCompat.getColor(context, R.color.card_label_learned),
-                                    BlendModeCompat.SRC_ATOP
-                                )
+                            cardLabelTextView.backgroundTintList =
+                                ContextCompat.getColorStateList(context, R.color.card_label_learned)
                             cardLabelTextView.setOnClickListener {
                                 showCardLabelTipPopup(cardLabel)
                             }
@@ -211,11 +212,8 @@ class ManualTestExerciseCardViewHolder(
                         }
                         CardLabel.Expired -> {
                             cardLabelTextView.setText(R.string.card_label_expired)
-                            cardLabelTextView.background.colorFilter =
-                                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                                    ContextCompat.getColor(context, R.color.issue),
-                                    BlendModeCompat.SRC_ATOP
-                                )
+                            cardLabelTextView.backgroundTintList =
+                                ContextCompat.getColorStateList(context, R.color.card_label_expired)
                             cardLabelTextView.setOnClickListener {
                                 showCardLabelTipPopup(cardLabel)
                             }

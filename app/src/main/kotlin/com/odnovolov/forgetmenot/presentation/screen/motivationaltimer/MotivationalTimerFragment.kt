@@ -169,8 +169,8 @@ class MotivationalTimerFragment : BaseFragment() {
         super.onPause()
         timeForAnswerEditText.hideSoftInput()
         contentScrollView.viewTreeObserver.removeOnScrollChangedListener(scrollListener)
-        val behavior = BottomSheetBehavior.from(exampleFragmentContainerView)
-        behavior.removeBottomSheetCallback(bottomSheetCallback)
+        exampleFragmentContainerView
+            .addBottomSheetCallbackWithInitialNotification(bottomSheetCallback)
         (activity as MainActivity).unregisterBackPressInterceptor(backPressInterceptor)
     }
 
@@ -191,9 +191,14 @@ class MotivationalTimerFragment : BaseFragment() {
     private val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             exampleFragment.notifyBottomSheetStateChanged(newState)
+            if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                appBar.requestFocus()
+            }
         }
 
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            exampleFragment.notifyBottomSheetSlideOffsetChanged(slideOffset)
+            screenFrame.alpha = 1f - slideOffset
         }
     }
 

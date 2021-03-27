@@ -7,6 +7,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import com.odnovolov.forgetmenot.domain.architecturecomponents.EventFlow
 import com.odnovolov.forgetmenot.domain.architecturecomponents.FlowMaker
+import com.odnovolov.forgetmenot.domain.architecturecomponents.FlowMakerWithRegistry
 import com.odnovolov.forgetmenot.domain.entity.Speaker
 import com.odnovolov.forgetmenot.domain.generateId
 import com.odnovolov.forgetmenot.presentation.common.ActivityLifecycleCallbacksInterceptor.ActivityLifecycleEvent
@@ -30,7 +31,7 @@ class SpeakerImpl(
     private val applicationContext: Context,
     private val activityLifecycleEvents: Flow<ActivityLifecycleEvent>,
     private val audioFocusManager: AudioFocusManager,
-    private val initialLanguage: Locale? = null
+    private val lastUsedLanguages: LastUsedLanguages
 ) : Speaker {
     class State : FlowMaker<State>() {
         var status: Status by flowMaker(Initialization)
@@ -39,6 +40,16 @@ class SpeakerImpl(
         var availableLanguages: Set<Locale> by flowMaker(emptySet())
         var isPreparingToSpeak: Boolean by flowMaker(false)
         var isSpeaking: Boolean by flowMaker(false)
+    }
+
+    class LastUsedLanguages(
+        language1: Locale?,
+        language2: Locale?
+    ) : FlowMakerWithRegistry<LastUsedLanguages>() {
+        var language1: Locale? by flowMaker(language1)
+        var language2: Locale? by flowMaker(language2)
+
+        override fun copy() = LastUsedLanguages(language1, language2)
     }
 
     enum class Status {
@@ -83,7 +94,7 @@ class SpeakerImpl(
     private var needToRestartSpeakingTts = false
     private var isAppBackground = false
     private var speakingTask: SpeakingTask? = null
-    private var onSpeakingFinishedListener: (() -> Unit)? = null
+    private var listeners: MutableList<() -> Unit> = ArrayList()
     private val channelsForObservingLanguageStatus: MutableList<Pair<Locale?, Channel<LanguageStatus?>>> =
         CopyOnWriteArrayList()
     private val toneGenerator: ToneGenerator
@@ -92,7 +103,10 @@ class SpeakerImpl(
 
     init {
         coroutineScope.launch {
-            registerNewTts(initialLanguage)
+            with(lastUsedLanguages) {
+                language1?.let(::registerNewTts)
+                language2?.let(::registerNewTts)
+            }
             observeActivityLifecycleEvents()
             observeAudioFocusState()
         }
@@ -271,7 +285,7 @@ class SpeakerImpl(
                 coroutineScope.launch {
                     state.isSpeaking = false
                     isSpeaking = false
-                    onSpeakingFinishedListener?.invoke()
+                    listeners.forEach { it.invoke() }
                     if (needToRestartSpeakingTts) {
                         restartTts()
                         needToRestartSpeakingTts = false
@@ -286,7 +300,7 @@ class SpeakerImpl(
                     state.isPreparingToSpeak = false
                     state.isSpeaking = false
                     isSpeaking = false
-                    onSpeakingFinishedListener?.invoke()
+                    listeners.forEach { it.invoke() }
                     speakingTask = null
                     audioFocusManager.abandonRequest(AUDIOFOCUS_KEY)
                 }
@@ -392,6 +406,8 @@ class SpeakerImpl(
                 eventFlow.send(SpeakError)
                 audioFocusManager.abandonRequest(AUDIOFOCUS_KEY)
                 updateLanguageStatus()
+            } else {
+                language?.let(::saveLastUsedLanguage)
             }
         }
     }
@@ -401,9 +417,16 @@ class SpeakerImpl(
             toneGenerator.startTone(ToneGenerator.TONE_CDMA_ABBR_REORDER, ERROR_SOUND_DURATION)
             delay(ERROR_SOUND_DURATION.toLong())
             if (isActive) {
-                onSpeakingFinishedListener?.invoke()
+                listeners.forEach { it.invoke() }
                 errorSoundJob = null
             }
+        }
+    }
+
+    private fun saveLastUsedLanguage(language: Locale) {
+        if (lastUsedLanguages.language1 != language) {
+            lastUsedLanguages.language2 = lastUsedLanguages.language1
+            lastUsedLanguages.language1 = language
         }
     }
 
@@ -425,9 +448,15 @@ class SpeakerImpl(
         .distinctUntilChanged()
         .flowOn(speakerThreadContext)
 
-    override fun setOnSpeakingFinished(onSpeakingFinished: () -> Unit) {
+    override fun addOnSpeakingFinishedListener(onSpeakingFinished: () -> Unit) {
         coroutineScope.launch {
-            onSpeakingFinishedListener = onSpeakingFinished
+            listeners.add(onSpeakingFinished)
+        }
+    }
+
+    override fun removeOnSpeakingFinishedListener(onSpeakingFinished: () -> Unit) {
+        coroutineScope.launch {
+            listeners.remove(onSpeakingFinished)
         }
     }
 

@@ -47,6 +47,13 @@ object DatabaseInitializer {
                 createdAtAdapter = dateTimeAdapter,
                 lastTestedAtAdapter = dateTimeAdapter
             ),
+            DeckListDb.Adapter(
+                deckIdsAdapter = setOfLongAdapter
+            ),
+            DeckReviewPreferenceDb.Adapter(
+                deckSortingCriterionAdapter = EnumColumnAdapter(),
+                deckSortingDirectionAdapter = EnumColumnAdapter()
+            ),
             ExercisePreferenceDb.Adapter(
                 testingMethodAdapter = EnumColumnAdapter(),
                 cardInversionAdapter = EnumColumnAdapter()

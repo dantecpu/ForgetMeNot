@@ -25,7 +25,7 @@ import com.odnovolov.forgetmenot.presentation.screen.home.DeckListItem.DeckPrevi
 import kotlinx.android.synthetic.main.item_deck_preview.view.*
 
 class DeckPreviewAdapter(
-    private val setupHeader: (View) -> Unit,
+    private val createHeader: (parent: ViewGroup) -> View,
     private val onDeckButtonClicked: (deckId: Long) -> Unit,
     private val onDeckButtonLongClicked: ((deckId: Long) -> Unit)? = null,
     private val onDeckOptionButtonClicked: ((deckId: Long) -> Unit)? = null,
@@ -54,8 +54,7 @@ class DeckPreviewAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = when (viewType) {
             TYPE_HEADER -> {
-                layoutInflater.inflate(R.layout.item_deck_preview_header, parent, false)
-                    .also(setupHeader)
+                createHeader(parent)
             }
             TYPE_FOOTER -> {
                 layoutInflater.inflate(R.layout.item_deck_preview_footer, parent, false)
@@ -122,7 +121,7 @@ class DeckPreviewAdapter(
             }
             val deckListIcon: Drawable = DeckListDrawableGenerator.generateIcon(
                 strokeColors = deckPreview.deckListColors,
-                backgroundColor = Color.WHITE
+                backgroundColor = ContextCompat.getColor(context, R.color.surface)
             )
             deckNameTextView.setCompoundDrawablesRelative(deckListIcon, null, null, null)
             updateDeckItemSelectionState(itemView = this, deckPreview.deckId)
@@ -136,7 +135,7 @@ class DeckPreviewAdapter(
     private fun getTaskColor(numberOfCardsReadyForExercise: Int?, context: Context): Int {
         return if (numberOfCardsReadyForExercise == null || numberOfCardsReadyForExercise == 0) {
             if (colorNotHasTask == null) {
-                colorNotHasTask = ContextCompat.getColor(context, R.color.textPrimary)
+                colorNotHasTask = ContextCompat.getColor(context, R.color.text_high_emphasis)
             }
             colorNotHasTask!!
         } else {
@@ -199,7 +198,6 @@ class DeckPreviewAdapter(
             parentWidth = parent.width
             textViewForMeasure = TextView(parent.context).apply {
                 layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-                setTextColor(ContextCompat.getColor(context, R.color.textPrimary))
                 setTextSizeFromRes(R.dimen.text_size_home_screen_deck_name)
                 setFont(R.font.nunito_bold)
             }

@@ -43,7 +43,7 @@ class HomeViewModel(
             deckId,
             deckName,
             searchMatchingRanges,
-            "%.1f".format(averageLaps),
+            if (averageLaps.isNaN()) "0.0" else "%.1f".format(averageLaps),
             learnedCount,
             totalCount,
             numberOfCardsReadyForExercise,
@@ -60,12 +60,18 @@ class HomeViewModel(
         }
     }
 
+    val hasSearchText: Flow<Boolean> =
+        homeScreenState.flowOf(HomeScreenState::searchText)
+            .map { it.isNotEmpty() }
+            .distinctUntilChanged()
+
     private val rawDecksPreview: Flow<List<RawDeckPreview>> = combine(
         globalState.flowOf(GlobalState::decks),
-        deckReviewPreference.flowOf(DeckReviewPreference::currentDeckList),
+        deckReviewPreference.flowOf(DeckReviewPreference::deckList),
+        hasSearchText,
         homeScreenState.flowOf(HomeScreenState::updateDeckListSignal)
-    ) { decks: Collection<Deck>, currentDeckList: DeckList?, _ ->
-        if (currentDeckList == null) {
+    ) { decks: Collection<Deck>, currentDeckList: DeckList?, hasSearchText: Boolean, _ ->
+        if (hasSearchText || currentDeckList == null) {
             decks
         } else {
             decks.filter { deck: Deck ->
@@ -123,10 +129,11 @@ class HomeViewModel(
 
     val deckListTitle: Flow<DeckListTitle> = combine(
         displayOnlyDecksAvailableForExercise,
-        deckReviewPreference.flowOf(DeckReviewPreference::currentDeckList)
+        deckReviewPreference.flowOf(DeckReviewPreference::deckList)
     ) { displayOnlyDecksAvailableForExercise: Boolean, currentDeckList: DeckList? ->
         DeckListTitle(displayOnlyDecksAvailableForExercise, currentDeckList?.name)
     }
+        .flowOn(Dispatchers.Default)
 
     private val searchText: Flow<String> = homeScreenState.flowOf(HomeScreenState::searchText)
 
@@ -181,19 +188,16 @@ class HomeViewModel(
     val deckSelection: Flow<DeckSelection?> = homeScreenState.flowOf(HomeScreenState::deckSelection)
         .share()
 
-    val hasSearchText: Flow<Boolean> =
-        homeScreenState.flowOf(HomeScreenState::searchText)
-            .map { it.isNotEmpty() }
-            .distinctUntilChanged()
-
     @OptIn(ExperimentalStdlibApi::class)
     val selectableDeckLists: Flow<List<SelectableDeckList>> = combine(
         globalState.flowOf(GlobalState::decks),
         globalState.flowOf(GlobalState::deckLists),
-        deckReviewPreference.flowOf(DeckReviewPreference::currentDeckList)
+        deckReviewPreference.flowOf(DeckReviewPreference::deckList),
+        homeScreenState.flowOf(HomeScreenState::updateDeckListSignal)
     ) { decks: CopyableCollection<Deck>,
         deckLists: CopyableCollection<DeckList>,
-        currentDeckList: DeckList?
+        currentDeckList: DeckList?,
+        _
         ->
         buildList {
             val allDecksDeckList = SelectableDeckList(

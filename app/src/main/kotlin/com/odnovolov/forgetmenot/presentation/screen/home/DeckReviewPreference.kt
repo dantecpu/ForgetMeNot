@@ -4,22 +4,29 @@ import com.odnovolov.forgetmenot.domain.architecturecomponents.FlowMakerWithRegi
 import com.odnovolov.forgetmenot.domain.entity.DeckList
 
 class DeckReviewPreference(
-    currentDeckList: DeckList?,
+    override val id: Long,
+    deckList: DeckList?,
     deckSorting: DeckSorting,
     displayOnlyDecksAvailableForExercise: Boolean
 ) : FlowMakerWithRegistry<DeckReviewPreference>() {
-    var currentDeckList: DeckList? by flowMakerForCopyable(currentDeckList)
+    var deckList: DeckList? by flowMakerForCopyable(deckList)
     var deckSorting: DeckSorting by flowMaker(deckSorting)
     var displayOnlyDecksAvailableForExercise: Boolean by flowMaker(displayOnlyDecksAvailableForExercise)
 
     override fun copy() = DeckReviewPreference(
-        currentDeckList,
+        id,
+        deckList,
         deckSorting,
         displayOnlyDecksAvailableForExercise
     )
 
     companion object {
-        const val DEFAULT_DISPLAY_ONLY_DECKS_AVAILABLE_FOR_EXERCISE = false
-        const val DEFAULT_DECK_LIST_COLOR = 0xFF474747.toInt()
+        const val DEFAULT_DECK_LIST_COLOR = 0xFF7F7F7F.toInt()
+
+        const val ID_TO_VIEW = 0L
+        const val ID_TO_IMPORT_CARDS = 1L
+        const val ID_TO_MERGE = 2L
+        const val ID_TO_MOVE = 3L
+        const val ID_TO_COPY = 4L
     }
 }

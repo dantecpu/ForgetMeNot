@@ -7,6 +7,7 @@
         android:fitsSystemWindows="true">
 
     <LinearLayout
+            android:id="@+id/screenFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -15,7 +16,7 @@
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_window"
+                android:background="@color/window"
                 android:orientation="horizontal"
                 android:stateListAnimator="@animator/app_bar">
 
@@ -38,7 +39,7 @@
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
                     android:text="@string/screen_title_testing_method"
-                    android:textColor="@color/text_title"
+                    android:textColor="@color/text_high_emphasis"
                     android:textSize="@dimen/text_size_screen_title"
                     android:textStyle="bold" />
 
@@ -51,7 +52,7 @@
                     android:background="?selectableItemBackgroundBorderless"
                     android:contentDescription="@string/description_help_button"
                     app:srcCompat="@drawable/ic_round_help_outline_24"
-                    app:tint="@color/text_title" />
+                    app:tint="@color/text_high_emphasis" />
 
         </FrameLayout>
 
@@ -96,8 +97,8 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="12dp"
-                        android:layout_marginBottom="100dp"
-                        android:background="@drawable/white_rectangle_4dp_corner_radius"
+                        android:layout_marginBottom="@dimen/example_bottom_sheet_peek_height"
+                        android:background="@drawable/surface_4dp_corner_radius"
                         android:orientation="vertical"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
@@ -128,7 +129,7 @@
                                 android:paddingEnd="24dp"
                                 android:paddingBottom="12dp"
                                 android:text="@string/testing_method_without_testing"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/text_medium_emphasis"
                                 android:textSize="@dimen/text_size_radiobutton"
                                 android:visibility="invisible"
                                 tools:visibility="visible" />
@@ -156,7 +157,7 @@
                                 android:paddingEnd="24dp"
                                 android:paddingBottom="12dp"
                                 android:text="@string/testing_method_self_testing"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/text_medium_emphasis"
                                 android:textSize="@dimen/text_size_radiobutton"
                                 android:visibility="invisible"
                                 tools:checked="true"
@@ -185,7 +186,7 @@
                                 android:paddingEnd="24dp"
                                 android:paddingBottom="12dp"
                                 android:text="@string/testing_method_testing_with_variants"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/text_medium_emphasis"
                                 android:textSize="@dimen/text_size_radiobutton"
                                 android:visibility="invisible"
                                 tools:visibility="visible" />
@@ -213,7 +214,7 @@
                                 android:paddingEnd="24dp"
                                 android:paddingBottom="12dp"
                                 android:text="@string/testing_method_spell_check"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/text_medium_emphasis"
                                 android:textSize="@dimen/text_size_radiobutton"
                                 android:visibility="invisible"
                                 tools:visibility="visible" />
@@ -235,7 +236,7 @@
             android:layout_height="match_parent"
             android:tag="ExampleExerciseFragment"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="100dp"
+            app:behavior_peekHeight="@dimen/example_bottom_sheet_peek_height"
             app:behavior_skipCollapsed="true"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 

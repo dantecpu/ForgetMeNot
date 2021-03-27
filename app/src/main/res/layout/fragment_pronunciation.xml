@@ -7,6 +7,7 @@
         android:fitsSystemWindows="true">
 
     <LinearLayout
+            android:id="@+id/screenFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -15,7 +16,7 @@
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_window"
+                android:background="@color/window"
                 android:orientation="horizontal"
                 android:stateListAnimator="@animator/app_bar">
 
@@ -38,7 +39,7 @@
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
                     android:text="@string/screen_title_pronunciation"
-                    android:textColor="@color/text_title"
+                    android:textColor="@color/text_high_emphasis"
                     android:textSize="@dimen/text_size_screen_title"
                     android:textStyle="bold" />
 
@@ -51,7 +52,7 @@
                     android:background="?selectableItemBackgroundBorderless"
                     android:contentDescription="@string/description_help_button"
                     app:srcCompat="@drawable/ic_round_help_outline_24"
-                    app:tint="@color/text_title" />
+                    app:tint="@color/text_high_emphasis" />
 
         </FrameLayout>
 
@@ -92,7 +93,7 @@
                         android:id="@+id/settingsSurface"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:background="@drawable/white_rectangle_4dp_corner_radius"
+                        android:background="@drawable/surface_4dp_corner_radius"
                         app:layout_constraintBottom_toBottomOf="@id/speakTextInBracketsButton"
                         app:layout_constraintEnd_toEndOf="@id/answerTitle"
                         app:layout_constraintStart_toStartOf="@id/questionTitle"
@@ -110,7 +111,7 @@
                         android:paddingEnd="16dp"
                         android:paddingBottom="16dp"
                         android:text="@string/text_question_title_textview"
-                        android:textColor="@color/text_title"
+                        android:textColor="@color/text_high_emphasis"
                         android:textSize="@dimen/text_size_pronunciation_screen_section_title"
                         app:layout_constraintBottom_toTopOf="@+id/questionLanguageTextView"
                         app:layout_constraintEnd_toStartOf="@+id/divider"
@@ -146,7 +147,7 @@
                         android:paddingStart="8dp"
                         android:paddingTop="16dp"
                         android:paddingBottom="16dp"
-                        android:textColor="@color/textSecondary"
+                        android:textColor="@color/text_medium_emphasis"
                         android:textSize="@dimen/text_size_pronunciation_screen_language_button"
                         app:layout_constraintBottom_toTopOf="@+id/questionAutoSpeakButton"
                         app:layout_constraintEnd_toStartOf="@+id/questionMoreIcon"
@@ -165,7 +166,7 @@
                         app:layout_constraintStart_toEndOf="@id/questionLanguageTextView"
                         app:layout_constraintTop_toTopOf="@id/questionLanguageTextView"
                         app:srcCompat="@drawable/ic_round_expand_more_24"
-                        app:tint="@color/textSecondary" />
+                        app:tint="@color/text_medium_emphasis" />
 
                 <View
                         android:id="@+id/questionLanguageButton"
@@ -200,7 +201,7 @@
                             android:paddingEnd="12dp"
                             android:paddingBottom="16dp"
                             android:text="@string/text_autospeaking_switch"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/text_medium_emphasis"
                             android:textSize="@dimen/text_size_pronunciation_screen_autospeaking_switch"
                             android:visibility="invisible"
                             app:switchPadding="8dp"
@@ -231,7 +232,7 @@
                         android:paddingEnd="16dp"
                         android:paddingBottom="16dp"
                         android:text="@string/text_answer_title_textview"
-                        android:textColor="@color/text_title"
+                        android:textColor="@color/text_high_emphasis"
                         android:textSize="@dimen/text_size_pronunciation_screen_section_title"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -263,7 +264,7 @@
                         android:paddingStart="8dp"
                         android:paddingTop="16dp"
                         android:paddingBottom="16dp"
-                        android:textColor="@color/textSecondary"
+                        android:textColor="@color/text_medium_emphasis"
                         android:textSize="@dimen/text_size_pronunciation_screen_language_button"
                         app:layout_constraintEnd_toStartOf="@+id/answerMoreIcon"
                         app:layout_constraintStart_toEndOf="@+id/answerFlagTextView"
@@ -281,7 +282,7 @@
                         app:layout_constraintStart_toEndOf="@id/answerLanguageTextView"
                         app:layout_constraintTop_toTopOf="@id/answerLanguageTextView"
                         app:srcCompat="@drawable/ic_round_expand_more_24"
-                        app:tint="@color/textSecondary" />
+                        app:tint="@color/text_medium_emphasis" />
 
                 <View
                         android:id="@+id/answerLanguageButton"
@@ -314,7 +315,7 @@
                             android:paddingEnd="12dp"
                             android:paddingBottom="16dp"
                             android:text="@string/text_autospeaking_switch"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/text_medium_emphasis"
                             android:textSize="@dimen/text_size_pronunciation_screen_autospeaking_switch"
                             android:visibility="invisible"
                             app:switchPadding="8dp"
@@ -348,7 +349,7 @@
                             android:paddingEnd="8dp"
                             android:paddingBottom="16dp"
                             android:text="@string/text_speak_text_in_brackets"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/text_medium_emphasis"
                             android:textSize="@dimen/text_size_pronunciation_screen_speak_text_in_brackets_checkbox"
                             android:visibility="invisible"
                             tools:visibility="visible" />
@@ -361,7 +362,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="108dp"
+                        android:layout_marginBottom="@dimen/example_bottom_sheet_peek_height"
                         android:fontFamily="@font/nunito_extrabold"
                         android:text="@string/text_go_to_tts_settings_button"
                         android:textAllCaps="false"
@@ -384,7 +385,7 @@
             android:layout_height="match_parent"
             android:tag="ExampleExerciseFragment"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="100dp"
+            app:behavior_peekHeight="@dimen/example_bottom_sheet_peek_height"
             app:behavior_skipCollapsed="true"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 

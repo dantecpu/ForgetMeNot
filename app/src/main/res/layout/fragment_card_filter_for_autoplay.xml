@@ -11,7 +11,7 @@
             android:id="@+id/appBarSurface"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/background_window"
+            android:background="@color/window"
             app:layout_constraintBottom_toBottomOf="@id/matchingCardsLabelTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +24,7 @@
                 android:layout_height="48dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="4dp"
+                android:tint="@color/screen_title"
                 android:background="?selectableItemBackgroundBorderless"
                 android:contentDescription="@string/description_back_button"
                 app:srcCompat="@drawable/ic_round_keyboard_backspace_24" />
@@ -38,7 +39,7 @@
             android:fontFamily="@font/jura"
             android:padding="16dp"
             android:text="@string/screen_title_card_filter_for_autoplay"
-            android:textColor="@color/text_title"
+            android:textColor="@color/screen_title"
             android:textSize="@dimen/text_size_screen_title"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +56,7 @@
             android:maxLines="1"
             android:scaleX="3"
             android:scaleY="3"
-            android:textColor="@color/text_primary_blue"
+            android:textColor="@color/item_blue_selected"
             android:textSize="@dimen/text_size_card_filter_for_autoplay_screen_matching_cards_number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +73,7 @@
             android:elevation="4dp"
             android:fontFamily="@font/nunito_bold"
             android:gravity="center"
-            android:textColor="@color/text_description_blue"
+            android:textColor="@color/description_matching_cards_number"
             android:textSize="@dimen/text_size_card_filter_for_autoplay_screen_matching_cards_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,36 +104,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/white_rectangle_4dp_corner_radius"
-                    android:orientation="vertical">
+            <LinearLayout style="@style/SettingsSurface">
 
                 <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginBottom="16dp"
-                        android:drawablePadding="8dp"
-                        android:fontFamily="@font/nunito_bold"
+                        style="@style/SettingsTitleOnSettingsSurface"
                         android:text="@string/title_card_filter_state"
-                        android:textColor="@color/text_title"
-                        android:textSize="@dimen/text_size_section_title"
                         app:drawableStartCompat="@drawable/ic_round_emoji_flags_24" />
 
-                <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:background="?android:listDivider" />
+                <View style="@style/DividerOnSettingsSurface" />
 
                 <FrameLayout
                         android:id="@+id/availableForExerciseButton"
@@ -156,7 +135,7 @@
                             android:paddingEnd="24dp"
                             android:paddingBottom="12dp"
                             android:text="@string/text_available_for_exercise_group_checkbox"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/text_medium_emphasis"
                             android:textSize="@dimen/text_size_checkbox"
                             android:visibility="invisible"
                             tools:visibility="visible" />
@@ -184,7 +163,7 @@
                             android:paddingEnd="24dp"
                             android:paddingBottom="12dp"
                             android:text="@string/text_awaiting_group_checkbox"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/text_medium_emphasis"
                             android:textSize="@dimen/text_size_checkbox"
                             android:visibility="invisible"
                             tools:visibility="visible" />
@@ -213,7 +192,7 @@
                             android:paddingEnd="24dp"
                             android:paddingBottom="12dp"
                             android:text="@string/text_learned_group_checkbox"
-                            android:textColor="@color/textSecondary"
+                            android:textColor="@color/text_medium_emphasis"
                             android:textSize="@dimen/text_size_checkbox"
                             android:visibility="invisible"
                             tools:visibility="visible" />
@@ -222,36 +201,14 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/white_rectangle_4dp_corner_radius"
-                    android:orientation="vertical">
+            <LinearLayout style="@style/SettingsSurface">
 
                 <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginBottom="16dp"
-                        android:drawablePadding="8dp"
-                        android:fontFamily="@font/nunito_bold"
+                        style="@style/SettingsTitleOnSettingsSurface"
                         android:text="@string/title_card_filter_grade"
-                        android:textColor="@color/text_title"
-                        android:textSize="@dimen/text_size_section_title"
                         app:drawableStartCompat="@drawable/ic_medal_24" />
 
-                <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:background="?android:listDivider" />
+                <View style="@style/DividerOnSettingsSurface" />
 
                 <com.appyvet.materialrangebar.RangeBar
                         android:id="@+id/gradeRangeBar"
@@ -262,18 +219,18 @@
                         android:layout_marginBottom="16dp"
                         app:mrb_barWeight="2dp"
                         app:mrb_connectingLineWeight="4dp"
-                        app:mrb_pinColor="#888888"
+                        app:mrb_pinColor="@color/mrb_pin"
                         app:mrb_pinMaxFont="@dimen/text_size_range_bar_pin_max_font"
                         app:mrb_pinMinFont="@dimen/text_size_range_bar_pin_min_font"
                         app:mrb_pinRadius="14dp"
-                        app:mrb_pinTextColor="#ffffff"
-                        app:mrb_rangeBarColor="#cccccc"
+                        app:mrb_pinTextColor="@color/mrb_pin_text"
+                        app:mrb_rangeBarColor="@color/mrb_range_bar"
                         app:mrb_rangeBar_rounded="true"
                         app:mrb_selectorSize="10dp"
-                        app:mrb_tickDefaultColor="#888888"
+                        app:mrb_tickDefaultColor="@color/mrb_tick_default"
                         app:mrb_tickHeight="4dp"
-                        app:mrb_tickLabelColor="@color/textSecondary"
-                        app:mrb_tickLabelSelectedColor="@color/textSecondary"
+                        app:mrb_tickLabelColor="@color/text_medium_emphasis"
+                        app:mrb_tickLabelSelectedColor="@color/text_medium_emphasis"
                         app:mrb_tickLabelSize="@dimen/text_size_range_bar_tick_label"
                         tools:mrb_connectingLineColor="@color/colorAccent"
                         tools:mrb_leftSelectorColor="@color/grade_unsatisfactory"
@@ -283,36 +240,14 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/white_rectangle_4dp_corner_radius"
-                    android:orientation="vertical">
+            <LinearLayout style="@style/SettingsSurface">
 
                 <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginBottom="16dp"
-                        android:drawablePadding="8dp"
-                        android:fontFamily="@font/nunito_bold"
+                        style="@style/SettingsTitleOnSettingsSurface"
                         android:text="@string/title_card_filter_last_tested"
-                        android:textColor="@color/text_title"
-                        android:textSize="@dimen/text_size_section_title"
                         app:drawableStartCompat="@drawable/ic_round_history_24" />
 
-                <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:background="?android:listDivider" />
+                <View style="@style/DividerOnSettingsSurface" />
 
                 <HorizontalScrollView
                         android:id="@+id/lastTestedScrollView"
@@ -336,7 +271,7 @@
                                 android:layout_marginBottom="16dp"
                                 android:fontFamily="@font/nunito_bold"
                                 android:text="@string/title_last_tested_from"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/text_medium_emphasis"
                                 android:textSize="@dimen/text_size_description" />
 
                         <TextView
@@ -362,7 +297,7 @@
                                 android:layout_marginBottom="16dp"
                                 android:fontFamily="@font/nunito_bold"
                                 android:text="@string/title_last_tested_to"
-                                android:textColor="@color/textSecondary"
+                                android:textColor="@color/text_medium_emphasis"
                                 android:textSize="@dimen/text_size_description" />
 
                         <TextView
@@ -401,24 +336,24 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_margin="20dp"
             android:fontFamily="@font/nunito_extrabold"
-            android:outlineAmbientShadowColor="@color/colorAccent"
-            android:outlineSpotShadowColor="@color/colorAccent"
+            android:outlineAmbientShadowColor="@color/accent"
+            android:outlineSpotShadowColor="@color/accent"
             android:stateListAnimator="@animator/material_button"
             android:text="@string/text_start_playing_button"
             android:textAllCaps="false"
-            android:textColor="@color/text_autoplay_button"
+            android:textColor="@color/accent"
             android:textSize="@dimen/text_size_floating_button"
-            app:backgroundTint="@android:color/white"
+            app:backgroundTint="@color/light_floating_button"
             app:cornerRadius="16dp"
             app:icon="@drawable/ic_play_20"
             app:iconGravity="textStart"
             app:iconPadding="8dp"
-            app:iconTint="@color/colorAccent"
+            app:iconTint="@color/accent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:rippleColor="@color/colorAccent"
-            app:strokeColor="@color/exercise_button_stroke"
+            app:rippleColor="@color/accent"
+            app:strokeColor="@color/accent"
             app:strokeWidth="2dp" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
